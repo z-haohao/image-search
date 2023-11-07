@@ -1,0 +1,16 @@
+app:
+  image_access_domain: https://pic.belle.net.cn/
+
+kafka:
+  brokers: domain1:9092
+
+milvus:
+  host: test_host
+  port: 5678
+  user: abc123
+  password: abc1234
+
+minio:
+  endpoint: http://test_minio.example.com
+  access_key: minio_abc1234
+  secret_key: minio_abc12345

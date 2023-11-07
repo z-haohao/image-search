@@ -1,0 +1,30 @@
+# 忽略生成的Python字节码文件
+__pycache__/
+
+# 忽略虚拟环境目录
+venv/
+env/
+*.env
+
+# 忽略本地配置文件
+config/local_settings.py
+
+# 忽略IDE和编辑器生成的文件
+.idea/
+.vscode/
+*.pyc
+
+# 忽略日志文件
+logs/
+*.log
+
+# 忽略数据库文件
+*.sqlite3
+db.sqlite3
+
+# 忽略依赖文件和目录
+node_modules/
+package-lock.json
+yarn.lock
+
+tests/.pytest_cache
