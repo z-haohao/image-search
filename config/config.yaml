@@ -1,16 +1,17 @@
-app:
-  image_access_domain: https://pic.belle.net.cn/
-
 kafka:
-  brokers: szsjhl-damai-mysql1-test-10-10-223-16-belle.lan:9092,szsjhl-damai-mysql-test-10-10-223-19-belle.lan:9092
+  servers: "szsjhl-damai-mysql1-test-10-10-223-16-belle.lan:9092,szsjhl-damai-mysql-test-10-10-223-19-belle.lan:9092"
+  topic: "bi_mdm_product_picture"
 
 milvus:
   host: 10.10.214.172
   port: 19530
   user: root
   password: root123
+  database: zhu_hh
+  collection: shop_photo
 
 minio:
   endpoint: 10.251.37.248:7778
   access_key: dlink_write
   secret_key: qzw4Mh3tH4RSYpMo
+  bucket_name: ods-ps
