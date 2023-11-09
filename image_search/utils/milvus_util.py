@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from image_search.config.logging_config import logger
 from pymilvus import (
     connections, utility, FieldSchema, CollectionSchema,

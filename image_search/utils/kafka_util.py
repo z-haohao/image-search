@@ -1,4 +1,6 @@
+# -*- coding: utf-8 -*-
 from image_search.config.logging_config import logger
+# 消费消息的效率排名是：confluent-kafka > kafka-python > pykafka
 from confluent_kafka import Consumer, KafkaException, KafkaError
 import json
 
