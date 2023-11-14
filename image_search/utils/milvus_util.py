@@ -35,9 +35,9 @@ class MilvusClient:
         schema = CollectionSchema(fields, auto_id=False,
                                   description="Commodity Systems Department, Image Vectorization")
         index_params = {
-            "metric_type": "L2",
-            "index_type": "IVF_FLAT",
-            "params": {"nlist": 65535}
+            "index_type": "IVF_SQ8",
+            "metric_type": "IP",
+            "params": {"nlist": 1024}
         }
 
         collection = Collection(name=collection_name, schema=schema)  # Get an existing collection.

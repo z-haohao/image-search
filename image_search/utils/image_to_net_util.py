@@ -6,7 +6,6 @@ os.environ["CUDA_VISIBLE_DEVICES"] = "-1"
 #  抽取其中图片转换向量部分内容
 import datetime
 import base64
-import os
 import time
 
 #  · 以下版本固定使用以下处理过程
@@ -447,7 +446,7 @@ class Net(object):
         feat = self.model_resnet.predict(img)
         # print("feat:",feat.shape)
         norm_feat = feat[0] / LA.norm(feat[0])
-        return feat[0]
+        return norm_feat
 
     #  · 定义相似度计算函数 可以删除
     def similarity_mix_5(self, queryVec_list, byretate):

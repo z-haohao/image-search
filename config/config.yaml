@@ -1,14 +1,15 @@
 kafka:
-  servers: "szsjhl-damai-mysql1-test-10-10-223-16-belle.lan:9092,szsjhl-damai-mysql-test-10-10-223-19-belle.lan:9092"
+  servers: "bjm8-bdc-kafka-prd-10-251-35-201.belle.lan:9092,bjm8-bdc-kafka-prd-10-251-35-202.belle.lan:90920,bjm8-bdc-kafka-prd-10-251-35-203.belle.lan:9092"
   topic: "bi_mdm_product_picture"
+  consumer_name: "bdc.product_img_vector"
 
 milvus:
-  host: 10.10.214.172
-  port: 19530
-  user: root
-  password: root123
-  database: zhu_hh
-  collection: shop_photo
+  host: 10.251.37.251
+  port: 19531
+  user: bdc
+  password: um5R3UYhgbv6L4Ri
+  database: bdc_image_vectors
+  collection: bi_mdm_product_picture
 
 minio:
   endpoint: 10.251.37.248:7778

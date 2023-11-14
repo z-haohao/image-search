@@ -4,8 +4,8 @@ from image_search.config.logging_config import logger
 from confluent_kafka import Consumer, KafkaException, KafkaError
 import json
 
-class KafkaConsumer:
-    def __init__(self, topics, bootstrap_servers, image_fetcher, milvus_client, image_emb, group_id='image-search',
+class KafkaConsumerImgUrl:
+    def __init__(self, topics, bootstrap_servers, image_fetcher, milvus_client, image_emb, group_id='bdc.product_img_vector',
                  auto_offset_reset='earliest'):
         self.consumer = Consumer({
             'bootstrap.servers': bootstrap_servers,
@@ -36,6 +36,7 @@ class KafkaConsumer:
                         raise KafkaException(msg.error())
                 else:
                     self.process_message(msg)
+
 
         except KafkaException as e:
             logger.error(f"Kafka error: {e}")
