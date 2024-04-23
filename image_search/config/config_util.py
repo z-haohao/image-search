@@ -24,8 +24,8 @@ class ConfigManager:
     def get_milvus_config(self):
         return self.config['milvus']
 
-    def get_backup_image_server_config(self):
-        return self.config['backup_image_server']
+    def image_server_prefix_config(self):
+        return self.config['image_server']
 
 
 

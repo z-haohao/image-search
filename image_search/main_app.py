@@ -16,11 +16,10 @@ from retry import retry
 import threading
 import time
 
-
 # 记录程序启动的时间
 start_time = time.time()
 
-@retry(tries=3, delay=2)
+@retry(tries=3, delay=20)
 def main():
     # 加载配置
     config_manager = ConfigManager('../config/config.yaml')
@@ -28,10 +27,11 @@ def main():
     kafka_config = config_manager.get_kafka_config()
     minio_config = config_manager.get_minio_config()
     milvus_config = config_manager.get_milvus_config()
+    img_config = config_manager.image_server_prefix_config()
     # 初始化模块
     minio_client = MinioClient(endpoint=minio_config['endpoint'], access_key=minio_config['access_key'],
                                secret_key=minio_config['secret_key'], bucket_name=minio_config['bucket_name'])
-    img_req = ImageRequest()
+    img_req = ImageRequest(SERVER_PREFIX=img_config['server_prefix'])
     image_fetcher = ImageFetcher(minio_client, img_req)
     milvus_client = MilvusClient(host=milvus_config['host'], port=milvus_config['port'], user=milvus_config['user'],
                                  passwd=milvus_config['password'], database=milvus_config['database'],

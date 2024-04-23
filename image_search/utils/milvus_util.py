@@ -71,7 +71,7 @@ class MilvusClient:
             # 插入操作
             result = collection.upsert(entities, partition_name=brand_no)
             # 刷新集合以保证数据已写入
-            collection.load()
+            #collection.load()
             return result.primary_keys
         except Exception as e:
             logger.error(f"Error while upserting data with ID {id}: {e}")

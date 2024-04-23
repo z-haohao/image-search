@@ -18,6 +18,9 @@ class MinioClient:
     @retry(S3Error, tries=3, delay=2, backoff=2)
     def get_image(self, object_name):
         # 从Minio服务器获取对象
+        if '?' in object_name:
+            # 去除服务器对象访问中有? 的连接地址
+            object_name = object_name.split('?')[0]
         object_name = 'bi-mdm' + object_name
         try:
             response = self.client.get_object(self.bucket_name, object_name)
@@ -31,11 +34,12 @@ class MinioClient:
 
 
 class ImageRequest:
-    SERVER_PREFIX = "https://pic.belle.net.cn/"
+    # SERVER_PREFIX = "https://retailp2.bellecdn.com/"
 
-    def __init__(self):
+    def __init__(self,SERVER_PREFIX="https://retailp2.bellecdn.com/"):
         # 设置重试策略
         self.session = requests.Session()
+        self.SERVER_PREFIX = SERVER_PREFIX
         retries = Retry(total=5,
                         backoff_factor=0.1,
                         status_forcelist=[500, 502, 503, 504])
@@ -80,6 +84,6 @@ class ImageFetcher:
             return image
         else:
             # 如果MinIO中没有找到图片，从备用服务器获取
-            # image = self.img_req.request_image(image_path)
-            image = None
+            image = self.img_req.request_image(image_path)
+            # image = None
             return image

@@ -64,3 +64,42 @@
 #     img_net = Net()
 #     img_vectory = img_net.image_to_netvector(image_data)
 #     logger.info('图片向量为:' , img_vectory)
+
+
+
+# import os
+# import sys
+# # 获取根目录
+# BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+# # 将根目录添加到path中
+# sys.path.append(BASE_DIR)
+#
+# from prometheus_client import CollectorRegistry, Gauge, push_to_gateway
+# from image_search.config.logging_config import logger
+# from image_search.config.config_util import ConfigManager
+# from image_search.utils.kafka_util import KafkaConsumerImgUrl
+# from image_search.utils.image_fetcher import ImageFetcher, MinioClient, ImageRequest
+# from image_search.utils.milvus_util import MilvusClient
+# from image_search.utils.image_to_net_util import Net
+# from retry import retry
+# import threading
+# import time
+#
+# # 记录程序启动的时间
+# start_time = time.time()
+#
+#
+# # 加载配置
+# config_manager = ConfigManager(r'D:\code\pythonCode\image-search\config\config.yaml')
+# logger.info('获取配置成功')
+# kafka_config = config_manager.get_kafka_config()
+# minio_config = config_manager.get_minio_config()
+# milvus_config = config_manager.get_milvus_config()
+# # 初始化模块
+# minio_client = MinioClient(endpoint=minio_config['endpoint'], access_key=minio_config['access_key'],
+#                            secret_key=minio_config['secret_key'], bucket_name=minio_config['bucket_name'])
+# img_req = ImageRequest()
+# image_fetcher = ImageFetcher(minio_client, img_req)
+#
+# data = image_fetcher.fetch_image('/retail/2023/mdm/173155/BR/5d6cdf5c845d4561a191b29bc992f7ac.JPG')
+# print(data)

@@ -16,3 +16,7 @@ minio:
   access_key: dlink_write
   secret_key: qzw4Mh3tH4RSYpMo
   bucket_name: ods-ps
+
+image_server:
+  server_prefix: "https://retailp2.bellecdn.com/"
+
