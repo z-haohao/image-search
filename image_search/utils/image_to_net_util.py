@@ -213,6 +213,62 @@ class Net(object):
             print(e)
             return img
 
+    def img_cut_mix(self, img_cut):
+        #  -- 灰度图
+        Conv_hsv_Gray = cv.cvtColor(img_cut, cv.COLOR_RGB2GRAY)
+
+        #  -- 轮廓图
+        mask = cv.Canny(Conv_hsv_Gray,
+                        threshold1=20,  # threshold1：第一个阈值，用于边缘连接；
+                        threshold2=150,  # threshold2：第二个阈值，用于边缘检测；
+                        apertureSize=3  # apertureSize：Sobel 算子的大小，可选值为 3、5、7，默认值为 3；
+                        )
+        # Image.fromarray(mask).show()
+
+        #  -- 轮廓图进一步处理
+        #     高斯去噪
+        blurred = cv.GaussianBlur(mask, (9, 9), 0)
+        # blurred = cv.GaussianBlur(mask, (3, 3), 0)
+        #     索比尔算子来计算x、y方向梯度
+        gradX = cv.Sobel(blurred, ddepth=cv.CV_32F, dx=1, dy=0)
+        gradY = cv.Sobel(blurred, ddepth=cv.CV_32F, dx=0, dy=1)
+        gradient = cv.subtract(gradX, gradY)
+        gradient = cv.convertScaleAbs(gradient)
+
+        #  -- 轮廓图背景换为白色
+        # 生成同等大小白色背景
+        blank = np.full((gradient.shape[0], gradient.shape[1]), (255), gradient.dtype)
+        gradient = Image.fromarray(gradient)
+        blank = Image.fromarray(blank)
+        width = (blank.width - gradient.width) // 2
+        height = (blank.height - gradient.height) // 2
+        blank.paste(gradient, (width, height), gradient)
+
+        gradient = np.array(blank)
+
+        gradient = cv.merge((gradient, gradient, gradient))
+
+        # Image.fromarray(gradient).show()
+
+        #  -- 基于轮廓图计算截取位置
+        img_cut0, _01 = self.corp_image_new(gradient, diff_min=5, ax=1)
+        img_cut0, _00 = self.corp_image_new(img_cut0, diff_min=5, ax=0)
+        img_cut0, _11 = self.corp_image_new(img_cut0, diff_min=20, ax=1)
+        img_cut0, _10 = self.corp_image_new(img_cut0, diff_min=20, ax=0)
+        cut_top, cut_down = _01
+        if None not in [cut_top, cut_down]:
+            img_cut = img_cut[int(cut_top):int(cut_down), :, :]
+        cut_top, cut_down = _00
+        if None not in [cut_top, cut_down]:
+            img_cut = img_cut[:, int(cut_top):int(cut_down), :]
+        cut_top, cut_down = _11
+        if None not in [cut_top, cut_down]:
+            img_cut = img_cut[int(cut_top):int(cut_down), :, :]
+        cut_top, cut_down = _10
+        if None not in [cut_top, cut_down]:
+            img_cut = img_cut[:, int(cut_top):int(cut_down), :]
+        return img_cut
+
     #  · 边界填充
     def margin_add(self, img1, is_show=False):
         '''
@@ -398,11 +454,13 @@ class Net(object):
                 print("移除背景耗时：", datetime.datetime.now() - t0)
 
             #  -- 移除黑白边框前先裁剪掉边缘log   -- 先按高度方向裁剪再按宽度方向裁剪
-            img_cut0 = self.corp_image(img_cut, diff_min=5, ax=1)
-            img_cut0 = self.corp_image(img_cut0, diff_min=5, ax=0)
-            img_cut0 = self.corp_image(img_cut0, diff_min=20,
-                                       ax=1)  # url="https://img.alicdn.com/imgextra/i1/2074690906/O1CN01B9uP9U1IYzWwTnJPQ_!!2074690906.jpg"
-            img_cut0 = self.corp_image(img_cut0, diff_min=20, ax=0)
+            # img_cut0 = self.corp_image(img_cut, diff_min=5, ax=1)
+            # img_cut0 = self.corp_image(img_cut0, diff_min=5, ax=0)
+            # img_cut0 = self.corp_image(img_cut0, diff_min=20,
+            #                            ax=1)  # url="https://img.alicdn.com/imgextra/i1/2074690906/O1CN01B9uP9U1IYzWwTnJPQ_!!2074690906.jpg"
+            # img_cut0 = self.corp_image(img_cut0, diff_min=20, ax=0)
+
+            img_cut0 = self.img_cut_mix(img_cut)
 
             if min(img_cut.shape[0], img_cut.shape[1]) > (min(img.shape[0], img.shape[1]) / 5):
                 img_pad = img_cut0
@@ -558,5 +616,8 @@ class Net(object):
     #  获取图片
     def request_img(self, image):
         img = np.asarray(Image.open(BytesIO(image)).convert('RGB'))
+        #  将尺寸大于800×800的图片resize为800×800
+        if max(img.shape)>800:
+            img = cv.resize(img, (800, 800))
         self.query_img = img.copy()
         return img
