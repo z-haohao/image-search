@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# from image_search.config.logging_config import logger
+from image_search.config.logging_config import logger
 import os
 
 os.environ["CUDA_VISIBLE_DEVICES"] = "-1"
@@ -36,10 +36,12 @@ warnings.filterwarnings('ignore')
 
 # 禁用TensorFlow的某些警告和信息打印
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
-
+import ssl
+import urllib.request
 
 class Net(object):
     def __init__(self):
+        ssl._create_default_https_context = ssl._create_unverified_context
         '''resnet参数'''
         # include_top：是否保留顶层的3个全连接网络
         # weights：None代表随机初始化，即不加载预训练权重。'imagenet'代表加载预训练权重
@@ -51,7 +53,6 @@ class Net(object):
         self.weight = 'imagenet'  # weights: 'imagenet'
         self.pooling = 'max'  # pooling: 'max' or 'avg'
         self.input_shape = (self.imgsz, self.imgsz, 3)  # (width, height, 3), width and height should >= 48
-        print("开始初始化ResNet50模型")
         self.model_resnet = ResNet50(weights=self.weight,
                                      input_shape=(self.input_shape[0], self.input_shape[1], self.input_shape[2]),
                                      pooling=self.pooling, include_top=False)
@@ -665,26 +666,3 @@ class Net(object):
             img = cv.resize(img, (800, 800))
         self.query_img = img.copy()
         return img
-
-
-
-
-"""以下为测试,任务中可删掉"""
-import requests
-if __name__ == "__main__":
-    #  · 基于图片链接得到图片特征
-    image_url = 'https://blec-img.bellecdn.com/pics//staccato/2012/99823964/99823964_07_l.jpg?1'
-    image_url = 'https://retailp2.bellecdn.com/2021/MDM/FM/F4ZUFG02ZU1DC7.jpg?v=1612685555956'
-    Net=Net()
-
-    headers={
-            "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 11_1_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.96 Safari/537.36",
-            'Content-Type': 'image/jpeg'
-            }
-    img=requests.get(image_url, headers=headers).content
-    print("img:",Net.request_img(img).shape)
-
-    result_records=Net.image_to_netvector(img)
-    print(list(result_records))
-
-

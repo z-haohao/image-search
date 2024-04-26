@@ -1,5 +1,5 @@
 kafka:
-  servers: "bjm8-bdc-kafka-prd-10-251-35-201.belle.lan:9092,bjm8-bdc-kafka-prd-10-251-35-202.belle.lan:9092,bjm8-bdc-kafka-prd-10-251-35-203.belle.lan:9092"
+  servers: "10.251.35.201:9092,10.251.35.202:9092,10.251.35.203:9092"
   topic: "bi_mdm_product_ecommerce_picture"
   consumer_name: "bdc.product_ecommerce_img_vector"
 
