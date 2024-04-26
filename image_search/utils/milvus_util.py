@@ -19,6 +19,7 @@ class MilvusClient:
         self.brand_no = 'brand_no'
         self.img_emb = 'img_emb'
         self.picture_url = 'picture_url'
+        self.picture_source = 'picture_source'
         logger.info(f"当前milvus连接成功: {host} - database: {database} -- collection: {collection}")
         # 创建集合和分区，如果它们不存在
         if not utility.has_collection(collection):
@@ -32,7 +33,8 @@ class MilvusClient:
             FieldSchema(name=self.product_no, dtype=DataType.VARCHAR, max_length=2048),
             FieldSchema(name=self.brand_no, dtype=DataType.VARCHAR, max_length=2048),
             FieldSchema(name=self.img_emb, dtype=DataType.FLOAT_VECTOR, dim=2048),
-            FieldSchema(name=self.picture_url, dtype=DataType.VARCHAR, max_length=2048)
+            FieldSchema(name=self.picture_url, dtype=DataType.VARCHAR, max_length=2048),
+            FieldSchema(name=self.picture_source, dtype=DataType.VARCHAR, max_length=2048)
         ]
         schema = CollectionSchema(fields, auto_id=False,
                                   description="Commodity Systems Department, Image Vectorization")
@@ -54,7 +56,7 @@ class MilvusClient:
         logger.info(f"Collection {collection.name} is created.")
 
     @retry(Exception, tries=3, delay=2, backoff=2)
-    def upsert_data(self, ec_picture_id, product_no, brand_no, img_emb, picture_url):
+    def upsert_data(self, ec_picture_id, product_no, brand_no, img_emb, picture_url,picture_source):
         # 插入数据
         try:
             collection = Collection(self.collection_name)
@@ -64,7 +66,8 @@ class MilvusClient:
                 [product_no],
                 [brand_no],
                 [img_emb],
-                [picture_url]
+                [picture_url],
+                [picture_source]
             ]
 
             if not collection.has_partition(brand_no):

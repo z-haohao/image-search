@@ -60,6 +60,7 @@ class KafkaConsumerImgUrl:
         picture_url = msg['picture_url']
         product_no = msg['product_no']
         brand_no = msg['brand_no']
+        picture_source = msg['picture_source']
 
         img_data = self.image_fetcher.fetch_image(picture_url)
 
@@ -68,5 +69,5 @@ class KafkaConsumerImgUrl:
         else:
             img_emb = self.image_emb.image_to_netvector(image=img_data)
             self.milvus_client.upsert_data(ec_picture_id = ec_picture_id,product_no=product_no, brand_no=brand_no, img_emb=img_emb,
-                                           picture_url=picture_url)
+                                           picture_url=picture_url,picture_source=picture_source)
             # ec_picture_id = ec_picture_id,
