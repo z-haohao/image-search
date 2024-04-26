@@ -21,6 +21,9 @@ class ConfigManager:
     def get_minio_config(self):
         return self.config['minio']
 
+    def get_technology_minio_config(self):
+        return self.config['technology_minio']
+
     def get_milvus_config(self):
         return self.config['milvus']
 

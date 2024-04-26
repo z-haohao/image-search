@@ -61,7 +61,7 @@ class Net(object):
         self.img_dict = {}
         self.selection = None
         self.model_list = ["resnet"]  # ,"resnet_shoes2", "resnet_shoes"
-        logger.info("图片向量化各模块参数设置完成.")
+        # logger.info("图片向量化各模块参数设置完成.")
 
     #  · 图片处理为统一tensor  · 参考 imagedata_trans 函数：图片数据转换&归一化
     def image_to_tf(self, img):
@@ -213,16 +213,56 @@ class Net(object):
             print(e)
             return img
 
-    def img_cut_mix(self, img_cut):
+    #  · 图片裁剪（20240325修改：基于轮廓图截取，兼容更多图片）   -- 增加基于行列像素差值的裁剪  保留差值非零且占据面积最大的部分
+    def corp_image_new(self,img,diff_min=5,ax=1):
+        img2 = img.sum(axis=2)
+        # print(img2.shape)
+        # pd.DataFrame({"W":img2.sum(axis=0),"H:":img2.sum(axis=1)}).plot()
+        # plt.show()
+        # pd.DataFrame({"W_max-min":img2.max(axis=0)-img2.min(axis=0),"H_max-min":img2.max(axis=1)-img2.min(axis=1)}).plot()
+        # plt.show()
+        # io.imshow(img)
+        # io.show()
+        # # print(list(img2.sum(axis=1)))
+        # # print(list(img2.max(axis=0)-img2.min(axis=0)))
+        # print(list(img2.max(axis=1)-img2.min(axis=1)))
+
+        #  -- 先按高度方向裁剪再按宽度方向裁剪
+        try:
+            df=pd.DataFrame({"H_max_min":img2.max(axis=ax)-img2.min(axis=ax),"index":list(range(img2.shape[np.abs(ax-1)]))})
+            df_up0=df[df.H_max_min>diff_min]
+            df_up0["index_diff"]=df_up0["index"].diff()
+            df_up0["index_last"]=df_up0["index"]-df_up0["index_diff"]
+            # df_up0["index_last"] = df_up0[["index", "index_diff"]].apply(lambda x: x[0] - x[1], axis=1)
+            cut_top_list=[df_up0.index.values[0]]+list(df_up0[df_up0.index_diff>1].index.values)
+            cut_down_list=list(df_up0[df_up0.index_diff>1].index_last.values)+[df_up0.index.values[-1]]
+
+            diff= list(map(lambda x: x[0]-x[1], zip(cut_down_list, cut_top_list)))
+            index_target=diff.index(max(diff))
+
+            cut_top=max(0,cut_top_list[index_target]-5)
+            cut_down=min(cut_down_list[index_target]+5,img2.shape[np.abs(ax-1)])
+
+            if ax==1:
+                img_cut=img[int(cut_top):int(cut_down),:,:]
+            else:
+                img_cut=img[:,int(cut_top):int(cut_down),:]
+
+            return img_cut,(cut_top,cut_down)
+        except Exception as e:
+            print(e)
+            return img,(None,None)
+
+    def img_cut_mix(self,img_cut):
         #  -- 灰度图
         Conv_hsv_Gray = cv.cvtColor(img_cut, cv.COLOR_RGB2GRAY)
 
         #  -- 轮廓图
-        mask = cv.Canny(Conv_hsv_Gray,
-                        threshold1=20,  # threshold1：第一个阈值，用于边缘连接；
-                        threshold2=150,  # threshold2：第二个阈值，用于边缘检测；
-                        apertureSize=3  # apertureSize：Sobel 算子的大小，可选值为 3、5、7，默认值为 3；
-                        )
+        mask=cv.Canny(Conv_hsv_Gray,
+                      threshold1=20,   # threshold1：第一个阈值，用于边缘连接；
+                      threshold2=150,  # threshold2：第二个阈值，用于边缘检测；
+                      apertureSize=3   # apertureSize：Sobel 算子的大小，可选值为 3、5、7，默认值为 3；
+                     )
         # Image.fromarray(mask).show()
 
         #  -- 轮廓图进一步处理
@@ -454,13 +494,16 @@ class Net(object):
                 print("移除背景耗时：", datetime.datetime.now() - t0)
 
             #  -- 移除黑白边框前先裁剪掉边缘log   -- 先按高度方向裁剪再按宽度方向裁剪
-            # img_cut0 = self.corp_image(img_cut, diff_min=5, ax=1)
+            # img_cut0 = self.corp_image(img_cut.copy(), diff_min=5, ax=1)
             # img_cut0 = self.corp_image(img_cut0, diff_min=5, ax=0)
-            # img_cut0 = self.corp_image(img_cut0, diff_min=20,
-            #                            ax=1)  # url="https://img.alicdn.com/imgextra/i1/2074690906/O1CN01B9uP9U1IYzWwTnJPQ_!!2074690906.jpg"
+            # img_cut0 = self.corp_image(img_cut0, diff_min=20,ax=1)  # url="https://img.alicdn.com/imgextra/i1/2074690906/O1CN01B9uP9U1IYzWwTnJPQ_!!2074690906.jpg"
             # img_cut0 = self.corp_image(img_cut0, diff_min=20, ax=0)
+            # io.imshow(img_cut0)
+            # io.show()
 
-            img_cut0 = self.img_cut_mix(img_cut)
+            img_cut0=self.img_cut_mix(img_cut)
+            # io.imshow(img_cut0)
+            # io.show()
 
             if min(img_cut.shape[0], img_cut.shape[1]) > (min(img.shape[0], img.shape[1]) / 5):
                 img_pad = img_cut0

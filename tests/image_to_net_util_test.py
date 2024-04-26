@@ -51,6 +51,7 @@ class Net(object):
         self.weight = 'imagenet'  # weights: 'imagenet'
         self.pooling = 'max'  # pooling: 'max' or 'avg'
         self.input_shape = (self.imgsz, self.imgsz, 3)  # (width, height, 3), width and height should >= 48
+        print("开始初始化ResNet50模型")
         self.model_resnet = ResNet50(weights=self.weight,
                                      input_shape=(self.input_shape[0], self.input_shape[1], self.input_shape[2]),
                                      pooling=self.pooling, include_top=False)
@@ -675,6 +676,7 @@ if __name__ == "__main__":
     image_url = 'https://blec-img.bellecdn.com/pics//staccato/2012/99823964/99823964_07_l.jpg?1'
     image_url = 'https://retailp2.bellecdn.com/2021/MDM/FM/F4ZUFG02ZU1DC7.jpg?v=1612685555956'
     Net=Net()
+
     headers={
             "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 11_1_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.96 Safari/537.36",
             'Content-Type': 'image/jpeg'

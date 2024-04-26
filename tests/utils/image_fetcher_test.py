@@ -1,26 +1,62 @@
-# # 实例化Minio工具类
-# # 注意：请用你的实际的endpoint, access_key和secret_key替换下面的字符串
+from minio.error import S3Error
+from minio import Minio
+from retry import retry
+
+class MinioClient:
+    def __init__(self, endpoint, access_key, secret_key, bucket_name, secure=False):
+        # 初始化minio客户端
+        self.client = Minio(endpoint, access_key=access_key, secret_key=secret_key, secure=secure)
+        self.bucket_name = bucket_name
+
+
+    @retry(S3Error, tries=3, delay=2, backoff=2)
+    def get_image(self, object_name):
+        # 从Minio服务器获取对象
+        if '?' in object_name:
+            # 去除服务器对象访问中有? 的连接地址
+            object_name = object_name.split('?')[0]
+        object_name = 'pics' + object_name
+        try:
+            print(object_name)
+            response = self.client.get_object(self.bucket_name, object_name)
+            return response.data
+        except S3Error as err:
+            return None
+        except Exception as err:
+            return None
+# technology_minio:
+#   minio_url: 'oss.prd.bjm6v.belle.lan:80'
+#   access_key: 'readonlytest'
+#   secret_key: 'aee53e37b15843ec957fa65818db088d'
+#   bucket_name: cdm-image
+
+
 # minio_client = MinioClient("10.251.37.248:7778",
 #             "dlink_write",
-#             "qzw4Mh3tH4RSYpMo")
-#
-# # 测试获取对象
-# try:
-#     bucket_name = "ods-ps"
-#     # 对象面前要去掉同名称
-#     object_name = "bi-mdm/2023/MDM/AD/FZ5710.jpg"
-#     image_data = minio_client.get_object(bucket_name, object_name)
-#     # 假设你想要将图像数据保存到文件中，你可以使用下面的代码
-#     with open('output_image.jpg', 'wb') as file:
-#         file.write(image_data)
-#     print("Image data retrieved and written to 'output_image.jpg'")
-# except S3Error as e:
-#     print(f"MinIO S3 error: {e}")
-# except Exception as e:
-#     print(f"An error occurred: {e}")
+#             "qzw4Mh3tH4RSYpMo",'ods-cdm-image')
+# 实例化Minio工具类
+# 注意：请用你的实际的endpoint, access_key和secret_key替换下面的字符串
+minio_client = MinioClient("oss.prd.bjm6v.belle.lan:80",
+            "readonlytest",
+            "aee53e37b15843ec957fa65818db088d","cdm-image")
+
+# 测试获取对象
+try:
+    bucket_name = "cdm-image"
+    # 对象面前要去掉同名称
+    object_name = "/staccato/2024/20240319000230/20240319000230_02_l.jpg"
+    image_data = minio_client.get_image( object_name)
+    # 假设你想要将图像数据保存到文件中，你可以使用下面的代码
+    with open('output_image.jpg', 'wb') as file:
+        file.write(image_data)
+    print("Image data retrieved and written to 'output_image.jpg'")
+except S3Error as e:
+    print(f"MinIO S3 error: {e}")
+except Exception as e:
+    print(f"An error occurred: {e}")
 
 
-# # 示例使用
+# 示例使用
 # if __name__ == "__main__":
 #     fetcher = ImageFetcher()
 #     image_suffix = "2021/MDM/TT/A5PPAK01DP1CM1.jpg"  # 实际的后缀路径

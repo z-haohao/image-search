@@ -26,17 +26,22 @@ def main():
     logger.info('获取配置成功')
     kafka_config = config_manager.get_kafka_config()
     minio_config = config_manager.get_minio_config()
+    technology_minio_config = config_manager.get_technology_minio_config()
     milvus_config = config_manager.get_milvus_config()
     img_config = config_manager.image_server_prefix_config()
     # 初始化模块
     minio_client = MinioClient(endpoint=minio_config['endpoint'], access_key=minio_config['access_key'],
                                secret_key=minio_config['secret_key'], bucket_name=minio_config['bucket_name'])
-    img_req = ImageRequest(SERVER_PREFIX=img_config['server_prefix'])
+
+    img_req = ImageRequest(endpoint=technology_minio_config['endpoint'], access_key=technology_minio_config['access_key'],
+                               secret_key=technology_minio_config['secret_key'], bucket_name=technology_minio_config['bucket_name'])
+
     image_fetcher = ImageFetcher(minio_client, img_req)
     milvus_client = MilvusClient(host=milvus_config['host'], port=milvus_config['port'], user=milvus_config['user'],
                                  passwd=milvus_config['password'], database=milvus_config['database'],
                                  collection=milvus_config['collection'])
     emb_net = Net()
+    print('执行完成')
     # 初始化Kafka消费者
     consumer_client = KafkaConsumerImgUrl(bootstrap_servers=kafka_config['servers'], topics=kafka_config['topic'], group_id=kafka_config['consumer_name'],
                                     image_fetcher=image_fetcher, milvus_client=milvus_client, image_emb=emb_net )

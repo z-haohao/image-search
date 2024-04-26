@@ -1,7 +1,7 @@
 kafka:
-  servers: "10.251.35.201:9092,10.251.35.202:9092,10.251.35.203:9092,10.251.35.204:9092,10.251.35.205:9092"
-  topic: "bi_mdm_product_picture"
-  consumer_name: "bdc.product_img_vector"
+  servers: "bjm8-bdc-kafka-prd-10-251-35-201.belle.lan:9092,bjm8-bdc-kafka-prd-10-251-35-202.belle.lan:9092,bjm8-bdc-kafka-prd-10-251-35-203.belle.lan:9092"
+  topic: "bi_mdm_product_ecommerce_picture"
+  consumer_name: "bdc.product_ecommerce_img_vector"
 
 milvus:
   host: 10.251.37.251
@@ -9,13 +9,19 @@ milvus:
   user: bdc
   password: um5R3UYhgbv6L4Ri
   database: bdc_image_vectors
-  collection: bi_mdm_product_picture
+  collection: bi_mdm_product_ecommerce_picture
 
 minio:
   endpoint: 10.251.37.248:7778
   access_key: dlink_write
   secret_key: qzw4Mh3tH4RSYpMo
-  bucket_name: ods-ps
+  bucket_name: ods-cdm-image
+
+technology_minio:
+  endpoint: 10.250.10.240:80
+  access_key: readonlytest
+  secret_key: aee53e37b15843ec957fa65818db088d
+  bucket_name: cdm-image
 
 image_server:
   server_prefix: "https://retailp2.bellecdn.com/"

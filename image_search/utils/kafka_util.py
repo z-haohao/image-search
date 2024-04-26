@@ -50,14 +50,23 @@ class KafkaConsumerImgUrl:
 
         msg_value = msg.value().decode('utf-8')
         msg = json.loads(msg_value)
+        # {
+        #   "ec_picture_id": 21353783,
+        #   "product_no": "20240319000230",
+        #   "brand_no": "ST",
+        #   "picture_url": "/staccato/2024/20240319000230/20240319000230_02_l.jpg"
+        # }
+        ec_picture_id = msg['ec_picture_id']
         picture_url = msg['picture_url']
         product_no = msg['product_no']
         brand_no = msg['brand_no']
+
         img_data = self.image_fetcher.fetch_image(picture_url)
 
         if img_data is None:
             logger.error(f'当前照片获取失败: {msg}')
         else:
             img_emb = self.image_emb.image_to_netvector(image=img_data)
-            self.milvus_client.upsert_data(product_no=product_no, brand_no=brand_no, img_emb=img_emb,
+            self.milvus_client.upsert_data(ec_picture_id = ec_picture_id,product_no=product_no, brand_no=brand_no, img_emb=img_emb,
                                            picture_url=picture_url)
+            # ec_picture_id = ec_picture_id,
