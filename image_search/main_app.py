@@ -65,9 +65,9 @@ def send_heartbeat():
 if __name__ == "__main__":
     try:
         # 启动守护线程
-        heartbeat_timer = threading.Timer(15, send_heartbeat)
-        heartbeat_timer.daemon = True
-        heartbeat_timer.start()
+        # heartbeat_timer = threading.Timer(15, send_heartbeat)
+        # heartbeat_timer.daemon = True
+        # heartbeat_timer.start()
         main()
     except Exception as e:
         logger.error(f"Failed to run the main program: {e}", exc_info=True)
