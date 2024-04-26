@@ -10,4 +10,5 @@ RUN pip install --no-cache-dir -r requirements.txt
 # 将下载训练接包含到镜像中
 RUN python /image-search/tests/download_net.py
 
-CMD ["python","/image-search/tests/image_to_net_util_test.py"]
+CMD ["python","/image-search/image_search/main_app.py"]
+#/opt/module/code/belle_code/python_code/image-search/image_search/main_app.py
