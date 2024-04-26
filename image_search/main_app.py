@@ -22,7 +22,7 @@ start_time = time.time()
 @retry(tries=3, delay=20)
 def main():
     # 加载配置
-    config_manager = ConfigManager('../config/config.yaml')
+    config_manager = ConfigManager('config/config.yaml')
     logger.info('获取配置成功')
     kafka_config = config_manager.get_kafka_config()
     minio_config = config_manager.get_minio_config()
