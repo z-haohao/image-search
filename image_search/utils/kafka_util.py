@@ -56,7 +56,7 @@ class KafkaConsumerImgUrl:
         #   "brand_no": "ST",
         #   "picture_url": "/staccato/2024/20240319000230/20240319000230_02_l.jpg"
         # }
-        ec_picture_id = msg['ec_picture_id']
+        picture_id = msg['picture_id']
         picture_url = msg['picture_url']
         product_no = msg['product_no']
         brand_no = msg['brand_no']
@@ -68,6 +68,6 @@ class KafkaConsumerImgUrl:
             logger.error(f'当前照片获取失败: {msg}')
         else:
             img_emb = self.image_emb.image_to_netvector(image=img_data)
-            self.milvus_client.upsert_data(ec_picture_id = ec_picture_id,product_no=product_no, brand_no=brand_no, img_emb=img_emb,
+            self.milvus_client.upsert_data(ec_picture_id = picture_id,product_no=product_no, brand_no=brand_no, img_emb=img_emb,
                                            picture_url=picture_url,picture_source=picture_source)
             # ec_picture_id = ec_picture_id,

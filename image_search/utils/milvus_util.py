@@ -14,7 +14,7 @@ class MilvusClient:
         db.using_database(database)
         # 建立到 Milvus 服务器的连接
         self.collection_name = collection
-        self.ec_picture_id = 'ec_picture_id'
+        self.picture_id = 'picture_id'
         self.product_no = 'product_no'
         self.brand_no = 'brand_no'
         self.img_emb = 'img_emb'
@@ -29,7 +29,7 @@ class MilvusClient:
     def create_collection(self, collection_name):
         # 定义集合的 schema
         fields = [
-            FieldSchema(name=self.ec_picture_id, dtype=DataType.INT64, is_primary=True, auto_id=False),
+            FieldSchema(name=self.picture_id, dtype=DataType.INT64, is_primary=True, auto_id=False),
             FieldSchema(name=self.product_no, dtype=DataType.VARCHAR, max_length=2048),
             FieldSchema(name=self.brand_no, dtype=DataType.VARCHAR, max_length=2048),
             FieldSchema(name=self.img_emb, dtype=DataType.FLOAT_VECTOR, dim=2048),
@@ -56,13 +56,13 @@ class MilvusClient:
         logger.info(f"Collection {collection.name} is created.")
 
     @retry(Exception, tries=3, delay=2, backoff=2)
-    def upsert_data(self, ec_picture_id, product_no, brand_no, img_emb, picture_url,picture_source):
+    def upsert_data(self, picture_id, product_no, brand_no, img_emb, picture_url,picture_source):
         # 插入数据
         try:
             collection = Collection(self.collection_name)
             # 构建数据
             entities = [
-                [ec_picture_id],
+                [picture_id],
                 [product_no],
                 [brand_no],
                 [img_emb],
