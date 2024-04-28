@@ -56,6 +56,9 @@ class ImageRequest:
         try:
             response = self.session.get(image_url)
             response.raise_for_status()  # 如果响应状态码不是200，将引发HTTPError异常
+            if not response.content:  # 检查是否有响应内容
+                logger.info(f"图片 {image_url} 无内容返回。")
+                return None
             img_data = response.content
             logger.info(f"图片 {image_url} 获取成功。")
             return img_data
