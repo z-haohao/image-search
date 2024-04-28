@@ -62,7 +62,14 @@ class KafkaConsumerImgUrl:
         brand_no = msg['brand_no']
         picture_source = msg['picture_source']
 
-        img_data = self.image_fetcher.fetch_image(picture_url)
+        # 通过获取的数据，进行判断需要去哪个桶中获取数据，进行写入
+        if picture_source == 'ecommerce_pro_picture':
+            # 数据来自大拇指
+            bucket_name = 'ods-cdm-image'
+        elif picture_source == 'pro_picture':
+            bucket_name = 'ods-ps'
+
+        img_data = self.image_fetcher.fetch_image(bucket_name,picture_url)
 
         if img_data is None:
             logger.error(f'当前照片获取失败: {msg}')

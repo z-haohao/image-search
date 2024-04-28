@@ -30,18 +30,20 @@ def main():
     milvus_config = config_manager.get_milvus_config()
     img_config = config_manager.image_server_prefix_config()
     # 初始化模块
-    minio_client = MinioClient(endpoint=minio_config['endpoint'], access_key=minio_config['access_key'],
+    collect_minio_client = MinioClient(endpoint=minio_config['endpoint'], access_key=minio_config['access_key'],
                                secret_key=minio_config['secret_key'], bucket_name=minio_config['bucket_name'])
 
-    img_req = ImageRequest(endpoint=technology_minio_config['endpoint'], access_key=technology_minio_config['access_key'],
+    minio_img_req = MinioClient(endpoint=technology_minio_config['endpoint'], access_key=technology_minio_config['access_key'],
                                secret_key=technology_minio_config['secret_key'], bucket_name=technology_minio_config['bucket_name'])
 
-    image_fetcher = ImageFetcher(minio_client, img_req)
+    img_req = ImageRequest(SERVER_PREFIX=img_config['server_prefix'])
+
+
+    image_fetcher = ImageFetcher(collect_minio_client, minio_img_req,img_req)
     milvus_client = MilvusClient(host=milvus_config['host'], port=milvus_config['port'], user=milvus_config['user'],
                                  passwd=milvus_config['password'], database=milvus_config['database'],
                                  collection=milvus_config['collection'])
     emb_net = Net()
-    print('执行完成')
     # 初始化Kafka消费者
     consumer_client = KafkaConsumerImgUrl(bootstrap_servers=kafka_config['servers'], topics=kafka_config['topic'], group_id=kafka_config['consumer_name'],
                                     image_fetcher=image_fetcher, milvus_client=milvus_client, image_emb=emb_net )
@@ -65,9 +67,9 @@ def send_heartbeat():
 if __name__ == "__main__":
     try:
         # 启动守护线程
-        # heartbeat_timer = threading.Timer(15, send_heartbeat)
-        # heartbeat_timer.daemon = True
-        # heartbeat_timer.start()
+        heartbeat_timer = threading.Timer(15, send_heartbeat)
+        heartbeat_timer.daemon = True
+        heartbeat_timer.start()
         main()
     except Exception as e:
         logger.error(f"Failed to run the main program: {e}", exc_info=True)

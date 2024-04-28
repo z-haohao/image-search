@@ -56,7 +56,7 @@ class Net(object):
                                      input_shape=(self.input_shape[0], self.input_shape[1], self.input_shape[2]),
                                      pooling=self.pooling, include_top=False)
 
-        # self.model_resnet.predict(np.zeros((1, self.imgsz, self.imgsz, 3)))
+        self.model_resnet.predict(np.zeros((1, self.imgsz, self.imgsz, 3)))
         self.dir = "./net_data"
         self.query = None
         self.img_dict = {}
