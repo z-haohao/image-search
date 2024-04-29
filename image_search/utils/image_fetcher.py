@@ -89,7 +89,6 @@ class ImageFetcher:
         image = self.minio_client.get_image(bucket_name, image_path)
         if image:
             return image
-
         elif bucket_name == 'ods-ps':
             # 如果MinIO中没有找到图片，从备用服务器获取
             image_path = image_path.replace('bi-mdm','')
@@ -102,3 +101,5 @@ class ImageFetcher:
             image = self.img_req.get_image(bucket_name,image_path)
             # image = None
             return image
+        else:
+            return None

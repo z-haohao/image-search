@@ -74,7 +74,10 @@ class KafkaConsumerImgUrl:
         if img_data is None:
             logger.error(f'当前照片获取失败: {msg}')
         else:
-            img_emb = self.image_emb.image_to_netvector(image=img_data)
-            self.milvus_client.upsert_data(picture_id = picture_id,product_no=product_no, brand_no=brand_no, img_emb=img_emb,
-                                           picture_url=picture_url,picture_source=picture_source)
+            try:
+                img_emb = self.image_emb.image_to_netvector(image=img_data)
+                self.milvus_client.upsert_data(picture_id = picture_id,product_no=product_no, brand_no=brand_no, img_emb=img_emb,
+                                               picture_url=picture_url,picture_source=picture_source)
+            except Exception as e:
+                logger.error(f'插入milvus报错，当前数据为{msg},原因为{e}')
             # ec_picture_id = ec_picture_id,
