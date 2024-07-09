@@ -10,5 +10,5 @@ prometheus-client==0.20.0
 retry==0.9.2
 scikit-image==0.21.0
 Pillow==10.0.1
-
 # 本次新增的环境配置信息
+cn_clip==1.5.1

@@ -51,7 +51,7 @@ class KafkaConsumerImgUrl:
         msg_value = msg.value().decode('utf-8')
         msg = json.loads(msg_value)
         # {
-        #   "ec_picture_id": 21353783,
+        #   "picture_id": 21353783,
         #   "product_no": "20240319000230",
         #   "brand_no": "ST",
         #   "picture_url": "/staccato/2024/20240319000230/20240319000230_02_l.jpg"
@@ -76,8 +76,8 @@ class KafkaConsumerImgUrl:
         else:
             try:
                 img_emb = self.image_emb.image_to_netvector(image=img_data)
-                self.milvus_client.upsert_data(picture_id = picture_id,product_no=product_no, brand_no=brand_no, img_emb=img_emb,
-                                               picture_url=picture_url,picture_source=picture_source)
+                self.milvus_client.upsert_data(picture_id=picture_id, product_no=product_no, brand_no=brand_no, img_emb=img_emb,
+                                               picture_url=picture_url, picture_source=picture_source)
             except Exception as e:
                 logger.error(f'插入milvus报错，当前数据为{msg},原因为{e}')
             # ec_picture_id = ec_picture_id,

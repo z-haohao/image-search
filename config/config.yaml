@@ -1,7 +1,7 @@
 kafka:
   servers: "10.251.35.201:9092,10.251.35.202:9092,10.251.35.203:9092"
-  topic: "bi_mdm_product_ecommerce_picture"
-  consumer_name: "bdc.product_ecommerce_img_vectors"
+  topic: "bi_mdm_product_ecommerce_picture_v2"
+  consumer_name: "bdc.product_ecommerce_img_vectors_v2"
 
 milvus:
   host: 10.251.37.251
@@ -9,7 +9,7 @@ milvus:
   user: bdc
   password: um5R3UYhgbv6L4Ri
   database: bdc_image_vectors
-  collection: bi_mdm_product_ecommerce_picture
+  collection: bi_mdm_product_ecommerce_picture_v2
 
 minio:
   endpoint: 10.251.37.248:7778
