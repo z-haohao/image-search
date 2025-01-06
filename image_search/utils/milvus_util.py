@@ -41,7 +41,7 @@ class MilvusClient:
         index_params = {
             "index_type": "IVF_SQ8",
             "metric_type": "IP",
-            "params": {"nlist": 1024}
+            "params": {"nlist": 2048}
         }
 
         collection = Collection(name=collection_name, schema=schema)  # Get an existing collection.
@@ -76,8 +76,8 @@ class MilvusClient:
 
             # 插入操作
             result = collection.upsert(entities, partition_name=brand_no)
-            # 刷新集合以保证数据已写入
-            #collection.load()
+            # 刷新集合以保证数据已写入 load 方法可以选异步或者同步的方式
+            # collection.load(_async=True)
             return result.primary_keys
         except Exception as e:
             logger.error(f"Error while upserting data with ID {id}: {e}")

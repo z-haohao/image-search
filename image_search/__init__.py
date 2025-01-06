@@ -1,0 +1,1 @@
+# export PATH="/opt/bigdata/anaconda3/bin:$PATH"

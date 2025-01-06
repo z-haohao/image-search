@@ -1,0 +1,20 @@
+这个向量库也迁移过去了，离线备份是今天的
+http://attu-bdc.kdp.belle.net.cn/
+10.252.130.15:39530
+bdc	um5R3UYhgbv6L4Ri
+analysis	j5lECyhKBRhARssw
+
+数据分析那边，吴婷婷的库
+http://attu-analysis.kdp.belle.net.cn/
+10.252.130.12:39530
+bdc	um5R3UYhgbv6L4Ri
+analysis	j5lECyhKBRhARssw
+
+科技中心kafka
+10.250.3.3:9092,10.250.3.17:9092,10.250.3.18:9092
+
+minio乌兰察布非结构化采集
+web
+http://minio-collect.kdp.belle.net.cn/
+API
+10.252.128.248:7778

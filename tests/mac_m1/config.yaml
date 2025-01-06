@@ -1,18 +1,18 @@
 kafka:
-  servers: "10.250.3.3:9092,10.250.3.17:9092,10.250.3.18:9092"
+  servers: "10.251.35.201:9092,10.251.35.202:9092,10.251.35.203:9092"
   topic: "bi_mdm_product_ecommerce_picture_v2"
   consumer_name: "bdc.product_ecommerce_img_vectors_v2"
 
 milvus:
-  host: 10.252.130.15
-  port: 39530
+  host: 10.251.37.33
+  port: 19531
   user: bdc
   password: um5R3UYhgbv6L4Ri
   database: bdc_image_vectors
   collection: bi_mdm_product_ecommerce_picture_v2
 
 minio:
-  endpoint: 10.252.128.248:7778
+  endpoint: 10.251.37.248:7778
   access_key: dlink_write
   secret_key: qzw4Mh3tH4RSYpMo
   bucket_name: ods-cdm-image
@@ -25,3 +25,4 @@ technology_minio:
 
 image_server:
   server_prefix: "https://retailp2.bellecdn.com/"
+
